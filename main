@@ -1,0 +1,156 @@
+# Program to generate secure passwords to the screen or to a file
+# Greg Wheeler made this in December of 2022
+
+import random
+
+# We need to know how many passwords
+numberOfPasswords = 0
+
+# How long should each password be?
+lengthOfPassword = 0
+
+# Numbers
+listNumbers = [0,1,2,3,4,5,6,7,8,9]
+
+# Uppercase letters
+listUppercaseLetters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+
+# Lowercase letters
+listLowercaseLetters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+
+# Note: Don't need to create a mixed-case list, because I'm just gonna combine the two lists above
+
+# Special Characters -- Backslash was tough!
+listSpecialCharacters = ['~', ':', "'", '+', '[', '\\', '@', '^', '{', '%', '(', '-', '"', '*', '|', ',', '&', '<', '`', '}', '.', '_', '=', ']', '!', '>', ';', '?', '#', '$', ')', '/']
+
+# We're going to use this list to hold all valid values that COULD go into a password based on user input
+validCharacters = []
+
+password = ""
+
+# We're going to use this list to hold all generated passwords
+generatedPasswords = []
+
+# Set the loop to False, it only gets to True with a valid selection
+validResponse = False
+
+while not validResponse:
+  # Starting text and menu
+  print("")
+  print("---------------------------------------------------------------------")
+  print("Welcome to the Password Generator!")
+  print("What would you like to do?")
+  print("1. Create One Password")
+  print("2. Create Multiple Passwords (Screen)")
+  print("---------------------------------------------------------------------")
+  response = int(input ("Please Select 1 or 2: "))
+
+  if response == 1:
+    print ("Let's answer a few questions about your single password")
+    numberOfPasswords = 1
+    validResponse = True
+  
+  elif response == 2:
+    numberOfPasswords = int(input("How many passwords would you like to generate? (Maximum 1000) ")) 
+    # 1000 chosen as a completely arbitrary number
+    if numberOfPasswords > 0 and numberOfPasswords <= 1000:
+      validResponse = True  
+  
+  else:
+    print("")
+    print("Error: Please Enter 1 or 2: ")
+    print("") 
+
+# The Password Length part 
+print("")
+print ("OK, generating " + str(numberOfPasswords) + " passwords for you. \n\nBut first I need to know how long you'd like your passwords to be need them to be. \n\nThis program can generate passwords from 12 to 64 characters in length.")
+print("")
+
+validResponse = False
+while not validResponse:
+  response = int(input("How long should your passwords be? " ))
+  if response >= 12 and response <= 64:
+    lengthOfPassword = response
+    validResponse = True
+  else:
+    print("Error: Please select a value between 12 and 64 characters")
+
+# The case sensitivity part            
+print("")
+print ("OK, generating " + str(numberOfPasswords) + " passwords that are " + str(lengthOfPassword) + " characters long. ")
+
+validResponse = False
+while not validResponse:
+  print("")
+  print("---------------------------------------------------------------------")
+  print("Do your passwords need to be all UPPERCASE, lowercase, or MiXeD CaSe?")
+  print("1. UPPERCASE")
+  print("2. lowercase")
+  print("3. MiXeD CaSe")
+  print("---------------------------------------------------------------------")
+  print("")
+  response = int(input ("Please Select 1, 2, or 3: "))
+
+  if response == 1:
+    validCharacters += listUppercaseLetters
+    validResponse = True
+
+  elif response == 2:
+    validCharacters += listLowercaseLetters
+    validResponse = True
+    
+  elif response == 3:
+    validCharacters += listLowercaseLetters + listUppercaseLetters
+    validResponse = True
+
+  else:
+    print("")
+    print("Error: Please Enter 1, 2, or 3: ")
+    print("")
+
+# Numbers? 
+print("")
+validResponse = False
+while not validResponse:
+  response = input("Would you like your password to contain numbers? Y or N ")
+  if response == "Y" or response == "y" or response == "Yes" or response == "yes" or response == "YES":
+      validCharacters += listNumbers;
+      validResponse = True
+  elif response == "N" or response == "n" or response == "No" or response == "no" or response == "NO":
+      validResponse = True
+  else:
+    print("Error: Please select Y or N: ")
+
+# Finally, special characters
+print("")
+validResponse = False
+while not validResponse:
+  response = input("Would you like your password to contain special characters? Y or N ")
+  if response == "Y" or response == "y" or response == "Yes" or response == "yes" or response == "YES":
+      validCharacters += listSpecialCharacters;
+      validResponse = True
+  elif response == "N" or response == "n" or response == "No" or response == "no" or response == "NO":
+      validResponse = True
+  else:
+    print("Error: Please select Y or N: ")
+print("")    
+
+# Time to build some passwords
+print("Here are the potential Characters for your password(s): ")
+print(str(validCharacters))
+print("")
+print("Generating " + str(numberOfPasswords) + " passwords: ")
+print("")
+
+# Outer Loop for the number of passwords you want to generate
+for i in range (int(numberOfPasswords)):
+  # Inner Loop for each character within that password.
+  # We're using random.choice because it has replacement
+  # If we didn't do this, passwords couldn't contain more than one of the same character
+  for j in range (int(lengthOfPassword)):
+    password += str(random.choice(validCharacters))
+  # Output to the screen  
+  print ("Your " + str(lengthOfPassword) + " digit password is: " + password + "\n")
+  # Clear the password and wait for the next one
+  # Future: Add the stored passwords to a list so that I could write them to a file
+  password = ""
